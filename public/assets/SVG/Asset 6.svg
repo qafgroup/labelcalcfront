@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 251.4 142.55">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #707173;
+      }
+
+      .cls-2 {
+        letter-spacing: -.07em;
+      }
+
+      .cls-3 {
+        letter-spacing: -.05em;
+      }
+
+      .cls-4 {
+        letter-spacing: -.07em;
+      }
+
+      .cls-5 {
+        fill: #e6e7e7;
+      }
+
+      .cls-6 {
+        fill: #ff6d2d;
+      }
+
+      .cls-7, .cls-8 {
+        fill: #fff;
+      }
+
+      .cls-9 {
+        letter-spacing: -.08em;
+      }
+
+      .cls-10 {
+        stroke: #2b4381;
+        stroke-width: .28px;
+      }
+
+      .cls-10, .cls-11 {
+        fill: none;
+      }
+
+      .cls-12 {
+        font-size: 9.87px;
+      }
+
+      .cls-12, .cls-8, .cls-13 {
+        font-family: ArialMT, Arial;
+      }
+
+      .cls-12, .cls-13, .cls-14 {
+        fill: #2b4381;
+      }
+
+      .cls-15 {
+        letter-spacing: -.11em;
+      }
+
+      .cls-16 {
+        letter-spacing: -.17em;
+      }
+
+      .cls-17 {
+        letter-spacing: -.17em;
+      }
+
+      .cls-18 {
+        letter-spacing: -.11em;
+      }
+
+      .cls-19 {
+        letter-spacing: -.05em;
+      }
+
+      .cls-20 {
+        letter-spacing: 0em;
+      }
+
+      .cls-21 {
+        letter-spacing: -.05em;
+      }
+
+      .cls-22 {
+        letter-spacing: -.07em;
+      }
+
+      .cls-11 {
+        stroke: #ff6d2d;
+        stroke-width: 5.67px;
+      }
+
+      .cls-23 {
+        fill: #b4b4b5;
+      }
+
+      .cls-8 {
+        font-size: 11px;
+        letter-spacing: -.05em;
+      }
+
+      .cls-13 {
+        font-size: 23.1px;
+      }
+
+      .cls-24 {
+        fill: #d5e7f0;
+      }
+    </style>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <rect class="cls-14" x="181.12" y="126.64" width="70.05" height="15.77"/>
+    <rect class="cls-14" y=".2" width="32.44" height="31.51"/>
+    <path class="cls-7" d="M16.69,12.51v-2.56c0-1.49-.1-1.82-.71-1.82-.42,0-.75.39-.75.89v5.68c1-.89,1.67-1.17,2.99-1.17,1.18,0,2.06.36,2.67,1.03.67.78.82,1.46.82,3.91v5.05c0,2.14-.18,2.88-.85,3.59-.82.89-1.64,1.04-5.33,1.04-2.2,0-2.92-.07-3.66-.46-1.28-.67-1.63-1.78-1.63-4.9l.03-1.89v-9.6l-.03-1.99c0-2.95.32-3.88,1.53-4.59.6-.36,1.74-.5,4.12-.5,3.2,0,4.09.18,4.83.85.5.5.78,1.1.89,2.06.11.54.11.93.11,2.6v2.78h-5.02ZM15.23,22.6l.04.5c0,.78.21,1.1.7,1.1.57,0,.71-.28.71-1.6v-3.05c0-1.28-.14-1.56-.75-1.56-.57,0-.71.28-.71,1.56v3.05Z"/>
+    <text class="cls-8" transform="translate(183.09 138.67)"><tspan x="0" y="0">Roll Direction 6</tspan></text>
+    <rect class="cls-10" x=".46" y=".14" width="250.8" height="142.27"/>
+    <text class="cls-13" transform="translate(81.2 26.65)"><tspan class="cls-3" x="0" y="0">F</tspan><tspan class="cls-21" x="12.98" y="0">o</tspan><tspan class="cls-3" x="24.67" y="0">ot</tspan><tspan class="cls-19" x="41.67" y="0"> </tspan><tspan class="cls-3" x="46.93" y="0">F</tspan><tspan class="cls-21" x="59.91" y="0">i</tspan><tspan class="cls-3" x="63.89" y="0">rs</tspan><tspan x="80.87" y="0">t</tspan></text>
+    <g>
+      <path class="cls-5" d="M174.97,70.58h-72.5c0-7.89,0-13.94,0-14.9,0-8.66-13.48-15.68-30.12-15.68s-30.12,7.02-30.12,15.68v60.09s.02.12.08.33c.63,4.89,5.57,9.17,12.87,11.82.03.01.06.02.09.04.01,0,.02,0,.03.01.5.18,1.01.35,1.53.52.29.09.57.17.86.26.15.04.29.09.44.13,4.9,1.39,9.45,1.76,12.34,1.82.62.02,1.25.03,1.88.03,1.05,0,2.09-.03,3.11-.08h99.51v-60.06Z"/>
+      <line class="cls-11" x1="150.73" y1="95.66" x2="195.96" y2="95.66"/>
+      <polygon class="cls-6" points="192.32 108.03 213.86 95.59 192.32 83.16 192.32 108.03"/>
+      <path class="cls-24" d="M53.63,122.7c-12.08-4.24-13.45-12.19-13.45-12.19v-33.09s8.43-12.92,34.83-12.1h102.12v60.06h-104.5s-9.3.71-19-2.68"/>
+      <path class="cls-7" d="M74.09,69.38h42.16c1.72,0,3.12,1.4,3.12,3.12v45.46c0,1.72-1.4,3.12-3.12,3.12h-42.16c-1.72,0-3.12-1.4-3.12-3.12v-45.46c0-1.72,1.4-3.12,3.12-3.12Z"/>
+      <path class="cls-7" d="M127.63,69.38h42.17c1.72,0,3.12,1.4,3.12,3.12v45.46c0,1.72-1.4,3.12-3.12,3.12h-42.16c-1.72,0-3.12-1.4-3.12-3.12v-45.46c0-1.72,1.4-3.12,3.12-3.12Z"/>
+    </g>
+    <text class="cls-12" transform="translate(88.83 114.21) rotate(-90)"><tspan class="cls-22" x="0" y="0">PR</tspan><tspan class="cls-9" x="12.25" y="0">I</tspan><tspan class="cls-2" x="14.25" y="0">NTIN</tspan><tspan x="34.34" y="0">G</tspan></text>
+    <text class="cls-12" transform="translate(98.72 109.02) rotate(-90)"><tspan class="cls-2" x="0" y="0">READ</tspan><tspan x="24.49" y="0">S</tspan></text>
+    <text class="cls-12" transform="translate(108.62 115.19) rotate(-90)"><tspan class="cls-2" x="0" y="0">THIS</tspan><tspan class="cls-9" x="19.55" y="0"> </tspan><tspan class="cls-18" x="21.55" y="0">W</tspan><tspan class="cls-16" x="29.77" y="0">A</tspan><tspan class="cls-20" x="34.65" y="0">Y</tspan></text>
+    <text class="cls-12" transform="translate(142.32 114.37) rotate(-90)"><tspan class="cls-22" x="0" y="0">PR</tspan><tspan class="cls-9" x="12.25" y="0">I</tspan><tspan class="cls-2" x="14.25" y="0">N</tspan><tspan class="cls-4" x="20.64" y="0">TI</tspan><tspan class="cls-2" x="27.93" y="0">N</tspan><tspan x="34.32" y="0">G</tspan></text>
+    <text class="cls-12" transform="translate(152.21 109.18) rotate(-90)"><tspan class="cls-2" x="0" y="0">READ</tspan><tspan x="24.49" y="0">S</tspan></text>
+    <text class="cls-12" transform="translate(162.11 115.35) rotate(-90)"><tspan class="cls-2" x="0" y="0">THIS</tspan><tspan class="cls-9" x="19.55" y="0"> </tspan><tspan class="cls-15" x="21.55" y="0">W</tspan><tspan class="cls-17" x="29.76" y="0">A</tspan><tspan x="34.64" y="0">Y</tspan></text>
+    <g>
+      <path class="cls-24" d="M102.33,50.42c0,3.09,0,59.36,0,59.36h-62.14v-59.36c0-8.66,13.91-15.67,31.08-15.67s31.07,7.02,31.07,15.67"/>
+      <path class="cls-23" d="M102.33,109.79c0,8.66-13.91,15.67-31.07,15.67s-31.08-7.02-31.08-15.67,13.91-15.68,31.08-15.68,31.07,7.02,31.07,15.68"/>
+      <path class="cls-1" d="M80.95,110.7c0,2.58-4.43,4.67-9.9,4.67s-9.9-2.09-9.9-4.67,4.43-4.67,9.9-4.67,9.9,2.09,9.9,4.67"/>
+    </g>
+  </g>
+</svg>
