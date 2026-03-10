@@ -28,7 +28,7 @@ export const useAppState = () => {
   const [shape, setShape] = useState('rectangle');
   const [cornerType, setCornerType] = useState('normal');
   const [printType, setPrintType] = useState('cmyk-4');
-  const [designCount, setDesignCount] = useState(1);
+  const [designCount, setDesignCount] = useState('1');
   const [hasLamination, setHasLamination] = useState(false);
   const [hasEmbossing, setHasEmbossing] = useState(false);
   const [embossingColor, setEmbossingColor] = useState('');

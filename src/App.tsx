@@ -144,10 +144,16 @@ export default function App() {
               setHasEmbossing={state.setHasEmbossing}
               embossingColor={state.embossingColor}
               setEmbossingColor={state.setEmbossingColor}
+              laminationType={state.laminationType}
+              setLaminationType={state.setLaminationType}
               hasSilkScreen={state.hasSilkScreen}
               setHasSilkScreen={state.setHasSilkScreen}
               hasSpotUV={state.hasSpotUV}
               setHasSpotUV={state.setHasSpotUV}
+              varnishType={state.varnishType}
+              setVarnishType={state.setVarnishType}
+              varneshCover={state.varneshCover}
+              setVarneshCover={state.setVarneshCover}
               assembly={state.assembly}
               setAssembly={state.setAssembly}
               rollDirection={state.rollDirection}
