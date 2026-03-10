@@ -1,9 +1,10 @@
-﻿import { colorList, cornerTypesList, designCountList, embossingColors, materialsData, shapesList } from "../data/static";
+﻿import {  cornerTypesList, embossingColors, laminationTypes, materialsData, shapesList, varnishTypes } from "../data/static";
 import {  calculateRequiredRollWidth } from "../config/pricingConfig";
 import {PRICING_CONFIG} from "../config/index"
 import { useMemo } from "react";
 import ChangeChoosesPrice from "../widgets/ChangeChoosesPrice";
 import ChangeItemsPrices from "../widgets/ChangeItemsPrices";
+import { PrintTypeSection } from "../widgets/printType";
 
 interface StickerDetailsSectionProps {
   length: string;
@@ -28,10 +29,16 @@ interface StickerDetailsSectionProps {
   setHasEmbossing: (value: boolean) => void;
   embossingColor: string;
   setEmbossingColor: (value: string) => void;
+  laminationType: string;
+  setLaminationType: (value: string) => void;
   hasSilkScreen: boolean;
   setHasSilkScreen: (value: boolean) => void;
   hasSpotUV: boolean;
   setHasSpotUV: (value: boolean) => void;
+  varnishType: string;
+  setVarnishType: (value: string) => void;
+  varneshCover: string;
+  setVarneshCover: (value: string) => void;
   assembly: string;
   setAssembly: (value: string) => void;
   rollDirection: string;
@@ -53,20 +60,22 @@ export function StickerDetailsSection(props: StickerDetailsSectionProps) {
     quantity, setQuantity,
     shape, setShape,
     cornerType, setCornerType,
-    printType, setPrintType,
     designCount, setDesignCount,
     material, setMaterial,
     hasLamination, setHasLamination,
     hasEmbossing, setHasEmbossing,
     embossingColor, setEmbossingColor,
+    laminationType, setLaminationType,
     hasSilkScreen, setHasSilkScreen,
     hasSpotUV, setHasSpotUV,
+    varnishType, setVarnishType,
     assembly, setAssembly,
     rollDirection, setRollDirection,
     gaping, setGaping,
     rollWidth, setRollWidth, // ✅ إضافة
     stickersAcrossWidth, // ✅ إضافة
     workFee, setWorkFee,
+    varneshCover, setVarneshCover,
   } = props;
 
   // ✅ حساب عرض الرول المطلوب
@@ -153,7 +162,7 @@ export function StickerDetailsSection(props: StickerDetailsSectionProps) {
             {/* الملصقات في المتر */}
             <div>
               <label className="block text-xs font-semibold text-neutral-600 mb-2">
-                رسوم تشغيل
+                تكلفة التشغيل
               </label>
               <input
                 type="number"
@@ -251,7 +260,7 @@ export function StickerDetailsSection(props: StickerDetailsSectionProps) {
               <button
                 key={item.value}
                 onClick={() => setShape(item.value)}
-                className={`px-4 py-3 rounded-lg border text-sm font-semibold transition-all ${shape === item.value
+                className={`py-2 rounded-lg border text-sm font-semibold transition-all ${shape === item.value
                     ? 'bg-neutral-900 text-white border-neutral-900'
                     : 'bg-white text-neutral-700 border-neutral-300 hover:border-neutral-400'
                   }`}
@@ -273,7 +282,7 @@ export function StickerDetailsSection(props: StickerDetailsSectionProps) {
                 <button
                   key={item.value}
                   onClick={() => setCornerType(item.value)}
-                  className={`px-3 py-2.5 rounded-lg border text-sm font-semibold transition-all ${cornerType === item.value
+                  className={`py-2 rounded-lg border text-sm font-semibold transition-all ${cornerType === item.value
                       ? 'bg-neutral-900 text-white border-neutral-900'
                       : 'bg-white text-neutral-600 border-neutral-300 hover:border-neutral-400'
                     }`}
@@ -286,40 +295,7 @@ export function StickerDetailsSection(props: StickerDetailsSectionProps) {
         )}
 
         {/* نوع الطباعة */}
-        <div>
-          <h3 className="text-sm font-bold text-neutral-700 mb-4 flex items-center gap-2">
-            <span className="w-1 h-4 bg-neutral-900 rounded-full" />
-            نوع الطباعة
-          </h3>
-          
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 grow">
-              {colorList.map((item) => (
-                <button
-                  key={item.value}
-                  onClick={() => setPrintType(item.value)}
-                  className={`px-1 py-2 rounded-lg border transition-all ${printType === item.value
-                      ? 'bg-neutral-900 text-white border-neutral-900'
-                      : 'bg-white text-neutral-700 border-neutral-300 hover:border-neutral-400'
-                    }`}
-                >
-                  <div className="font-bold text-sm">{item.label}</div>
-                  <div className="text-xs opacity-70 mt-0.5">{item.subtitle}</div>
-                </button>
-              ))}
-            </div>
-
-            {printType && (
-              <div className="min-w-fit px-4 py-2 bg-neutral-100 rounded-lg border border-dashed border-neutral-400 items-center">
-                <span className="text-xs text-neutral-500 block">السعر الإضافي:</span>
-                <span className="text-lg font-bold text-neutral-900">
-                  {colorList.find(c => c.value === printType)?.price} ر.س
-                </span>
-                <ChangeChoosesPrice listTypeOfData={colorList} />
-              </div>
-            )}
-          </div>
-        </div>
+        <PrintTypeSection />
 
         {/* عدد التصاميم ونوع المادة */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -328,23 +304,13 @@ export function StickerDetailsSection(props: StickerDetailsSectionProps) {
               عدد التصاميم
             </label>
             <div className="flex items-center gap-2">
-              <select
+               <input
+                type="number"
+                placeholder="10"
                 value={designCount}
                 onChange={(e) => setDesignCount(e.target.value)}
-                className="w-full bg-neutral-50 border border-neutral-300 rounded-lg px-3 py-2.5 text-neutral-900 text-sm font-medium focus:border-neutral-900 focus:outline-none focus:bg-white transition-all cursor-pointer"
-              >
-                {designCountList.map((num) => (
-                  <option key={num.value} value={num.value}>
-                    {num.label}
-                  </option>
-                ))}
-              </select>
-              
-              <div className="min-w-18.5 text-center py-2 px-1 bg-neutral-900 text-white rounded-lg text-xs font-bold item-center">
-                {designCountList.find(d => String(d.value) === String(designCount))?.price || 0} ر.س
-                 
-              </div>
-              <span className="flex items-center bg-neutral-900 text-white rounded-lg text-xs font-bold text-center item-center"><ChangeChoosesPrice listTypeOfData={designCountList} /></span>
+                className="w-full bg-neutral-50 border border-neutral-300 rounded-lg px-3 py-2.5 text-neutral-900 text-sm font-medium placeholder-neutral-400 focus:border-neutral-900 focus:outline-none focus:bg-white transition-all"
+              />
             </div>
           </div>
 
@@ -375,10 +341,17 @@ export function StickerDetailsSection(props: StickerDetailsSectionProps) {
                     </option>
                   ))}
                 </optgroup>
+                <optgroup label="خامات بلاستيكية (Plastic Materials)">
+                  {materialsData.plastic_materials.map((item) => (
+                    <option key={item.value} value={item.value}>
+                      {item.label}
+                    </option>
+                  ))}
+                </optgroup>
               </select>
 
               <div className="min-w-17.5 text-center py-2 px-1 bg-neutral-900 text-white rounded-lg text-xs font-bold">
-                {[...materialsData.paper_materials, ...materialsData.foil_materials].find(m => m.value === material)?.price || 0} ر.س
+                {[...materialsData.paper_materials, ...materialsData.foil_materials, ...materialsData.plastic_materials].find(m => m.value === material)?.price || 0} ر.س
               </div>
               <span className="flex items-center bg-neutral-900 text-white rounded-lg text-xs font-bold text-center item-center"><ChangeChoosesPrice listTypeOfData={materialsData} /></span>
             </div>
@@ -386,143 +359,202 @@ export function StickerDetailsSection(props: StickerDetailsSectionProps) {
         </div>
 
         {/* التشطيبات الإضافية */}
-        <div>
-          <h3 className="text-sm font-bold text-neutral-700 mb-4 flex items-center gap-2">
-            <span className="w-1 h-4 bg-neutral-900 rounded-full" />
-            التشطيبات الإضافية
-          </h3>
+        
+<div>
+  <h3 className="text-sm font-bold text-neutral-700 mb-4 flex items-center gap-2">
+    <span className="w-1 h-4 bg-neutral-900 rounded-full" />
+    التشطيبات الإضافية
+  </h3>
 
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {/* السلفان */}
-              <div className="flex items-center justify-between bg-neutral-50 border border-neutral-200 rounded-lg px-4 py-3 hover:bg-neutral-100 transition-all">
-                <div>
-                  <div className="text-sm font-semibold text-neutral-900">السلفان</div>
-                  <div className="text-xs text-neutral-500 mt-0.5">Lamination</div>
-                </div>
-                <div className="flex items-center gap-2">
-                  {hasLamination && (
-                    <div className="flex items-center gap-1.5">
-                      <div className="px-2.5 py-1 bg-neutral-900 text-white rounded-md text-[11px] font-semibold">
-                        +{PRICING_CONFIG.additionalCosts.lamination.perSqm} ر.س/م²
-                      </div>
-                    </div>
-                  )}
-                  <ChangeItemsPrices label="السلفان" price={PRICING_CONFIG.additionalCosts.lamination.perSqm} />
-                  <button
-                    onClick={() => setHasLamination(!hasLamination)}
-                    className={`relative w-12 h-6 rounded-full transition-all ${hasLamination ? 'bg-neutral-900' : 'bg-neutral-300'
-                      }`}
-                  >
-                    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${hasLamination ? 'right-1' : 'left-1'
-                      }`} />
-                  </button>
-                </div>
-              </div>
+  <div className="space-y-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start">
 
-              {/* سلك سكرين */}
-              <div className="flex items-center justify-between bg-neutral-50 border border-neutral-200 rounded-lg px-4 py-3 hover:bg-neutral-100 transition-all">
-                <div>
-                  <div className="text-sm font-semibold text-neutral-900">سلك سكرين</div>
-                  <div className="text-xs text-neutral-500 mt-0.5">silk screen</div>
-                </div>
-                <div className="flex items-center gap-2">
-                  {hasSilkScreen && (
-                    <div className="flex items-center gap-1.5">
-                      <div className="px-2.5 py-1 bg-neutral-900 text-white rounded-md text-[11px] font-semibold">
-                        +{PRICING_CONFIG.additionalCosts.silkScreen.perSqm} ر.س/م²
-                      </div>
-                    </div>
-                  )}
-                  <ChangeItemsPrices label="سلك سكرين" price={PRICING_CONFIG.additionalCosts.silkScreen.perSqm} />
-                  <button
-                    onClick={() => setHasSilkScreen(!hasSilkScreen)}
-                    className={`relative w-12 h-6 rounded-full transition-all ${hasSilkScreen ? 'bg-neutral-900' : 'bg-neutral-300'
-                      }`}
-                  >
-                    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${hasSilkScreen ? 'right-1' : 'left-1'
-                      }`} />
-                  </button>
-                </div>
+      {/* السلفان */}
+      <div className="bg-neutral-50 border border-neutral-200 rounded-lg px-4 py-3 hover:bg-neutral-100 transition-all">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-sm font-semibold text-neutral-900">السلفان</div>
+            <div className="text-xs text-neutral-500 mt-0.5">Lamination</div>
+          </div>
+          <div className="flex items-center gap-2">
+            {hasLamination && (
+              <div className="px-2.5 py-1 bg-neutral-900 text-white rounded-md text-[11px] font-semibold">
+                +{PRICING_CONFIG.additionalCosts.lamination.perSqm} ر.س/م²
               </div>
+            )}
+            <ChangeItemsPrices label="السلفان" price={PRICING_CONFIG.additionalCosts.lamination.perSqm} />
+            <button
+              onClick={() => setHasLamination(!hasLamination)}
+              className={`relative w-12 h-6 rounded-full transition-all shrink-0 ${hasLamination ? 'bg-neutral-900' : 'bg-neutral-300'}`}
+            >
+              <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${hasLamination ? 'right-1' : 'left-1'}`} />
+            </button>
+          </div>
+        </div>
+        {hasLamination && (
+          <div className="mt-3 pt-3 border-t border-neutral-200 animate-fadeIn">
+            <label className="block text-xs font-semibold text-neutral-600 mb-2">نوع السلفان</label>
+            <select
+              value={laminationType}
+              onChange={(e) => setLaminationType(e.target.value)}
+              className="w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 text-neutral-900 text-sm font-medium focus:border-neutral-900 focus:outline-none transition-all"
+            >
+              {laminationTypes.map((type) => (
+                <option key={type.value} value={type.value}>
+                  {type.label} {type.price > 0 ? `( +${type.price} ر.س )` : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+      </div>
+
+      {/* سلك سكرين */}
+      <div className="bg-neutral-50 border border-neutral-200 rounded-lg px-4 py-3 hover:bg-neutral-100 transition-all">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-sm font-semibold text-neutral-900">سلك سكرين</div>
+            <div className="text-xs text-neutral-500 mt-0.5">Silk Screen</div>
+          </div>
+          <div className="flex items-center gap-2">
+            {hasSilkScreen && (
+              <div className="px-2.5 py-1 bg-neutral-900 text-white rounded-md text-[11px] font-semibold">
+                +{PRICING_CONFIG.additionalCosts.silkScreen.perSqm} ر.س/م²
+              </div>
+            )}
+            <ChangeItemsPrices label="سلك سكرين" price={PRICING_CONFIG.additionalCosts.silkScreen.perSqm} />
+            <button
+              onClick={() => setHasSilkScreen(!hasSilkScreen)}
+              className={`relative w-12 h-6 rounded-full transition-all shrink-0 ${hasSilkScreen ? 'bg-neutral-900' : 'bg-neutral-300'}`}
+            >
+              <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${hasSilkScreen ? 'right-1' : 'left-1'}`} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start">
+
+      {/* البصمة */}
+      <div className="bg-neutral-50 border border-neutral-200 rounded-lg px-4 py-3 hover:bg-neutral-100 transition-all">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-sm font-semibold text-neutral-900">البصمة</div>
+            <div className="text-xs text-neutral-500 mt-0.5">Embossing - تأثير بارز</div>
+          </div>
+          <div className="flex items-center gap-2">
+            {hasEmbossing && (
+              <div className="px-2.5 py-1 bg-neutral-900 text-white rounded-md text-[11px] font-semibold">
+                {embossingColors.find(c => c.value === embossingColor)?.price || 0} ر.س/م²
+              </div>
+            )}
+            <ChangeChoosesPrice listTypeOfData={embossingColors} />
+            <button
+              onClick={() => setHasEmbossing(!hasEmbossing)}
+              className={`relative w-12 h-6 rounded-full transition-all shrink-0 ${hasEmbossing ? 'bg-neutral-900' : 'bg-neutral-300'}`}
+            >
+              <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${hasEmbossing ? 'right-1' : 'left-1'}`} />
+            </button>
+          </div>
+        </div>
+        {hasEmbossing && (
+          <div className="mt-3 pt-3 border-t border-neutral-200 animate-fadeIn space-y-3">
+            <div>
+              <label className="block text-xs font-semibold text-neutral-600 mb-2">لون البصمة</label>
+              <select
+                value={embossingColor}
+                onChange={(e) => setEmbossingColor(e.target.value)}
+                className="w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 text-neutral-900 text-sm font-medium focus:border-neutral-900 focus:outline-none transition-all"
+              >
+                {embossingColors.map((color) => (
+                  <option key={color.value} value={color.value}>
+                    {color.label} {color.price > 0 ? `( +${color.price} ر.س )` : ''}
+                  </option>
+                ))}
+              </select>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {/* البصمة */}
-              <div className="bg-neutral-50 border border-neutral-200 rounded-lg px-4 py-3 hover:bg-neutral-100 transition-all">
-                <div className="flex items-center justify-between mb-2">
-                  <div>
-                    <div className="text-sm font-semibold text-neutral-900">البصمة</div>
-                    <div className="text-xs text-neutral-500 mt-0.5">Embossing - تأثير بارز</div>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    {hasEmbossing && (
-                      <div className="flex items-center gap-1.5">
-                        <div className="px-2.5 py-1 bg-neutral-900 text-white rounded-md text-[11px] font-semibold">
-                          {embossingColors.find(c => c.value === embossingColor)?.price || 0} ر.س/م²
-                        </div>
-                      </div>
-                    )}
-                    <ChangeChoosesPrice listTypeOfData={embossingColors} />
-                    <button
-                      onClick={() => setHasEmbossing(!hasEmbossing)}
-                      className={`relative w-12 h-6 rounded-full transition-all ${hasEmbossing ? 'bg-neutral-900' : 'bg-neutral-300'
-                        }`}
-                    >
-                      <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${hasEmbossing ? 'right-1' : 'left-1'
-                        }`} />
-                    </button>
-                  </div>
-                </div>
-                
-                {hasEmbossing && (
-                  <div className="mt-3 pt-3 border-t border-neutral-200 animate-fadeIn">
-                    <label className="block text-xs font-semibold text-neutral-600 mb-2">لون البصمة</label>
-                    <select
-                      value={embossingColor}
-                      onChange={(e) => setEmbossingColor(e.target.value)}
-                      className="w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 text-neutral-900 text-sm font-medium focus:border-neutral-900 focus:outline-none transition-all"
-                    >
-                      {embossingColors.map((color) => (
-                        <option key={color.value} value={color.value}>
-                          {color.label} {color.price > 0 ? `( +${color.price} ر.س )` : ''}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-xs font-semibold text-neutral-600 mb-2">نسبة التغطية %</label>
+                <input
+                  type="number"
+                  placeholder="مثال: 10%"
+                  value={varneshCover}
+                  onChange={(e) => setVarneshCover(e.target.value)}
+                  className="w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 text-neutral-900 text-sm font-medium focus:border-neutral-900 focus:outline-none transition-all"
+                />
               </div>
-
-              {/* سبوت UV */}
-              <div className="flex items-center justify-between bg-neutral-50 border border-neutral-200 rounded-lg px-4 py-3 hover:bg-neutral-100 transition-all self-start">
-                <div>
-                  <div className="text-sm font-semibold text-neutral-900">سبوت UV</div>
-                  <div className="text-xs text-neutral-500 mt-0.5">Spot UV - لمعان انتقائي</div>
-                </div>
-                <div className="flex items-center gap-2">
-                  {hasSpotUV && (
-                    <div className="flex items-center gap-1.5">
-                      <div className="px-2.5 py-1 bg-neutral-900 text-white rounded-md text-[11px] font-semibold">
-                        +{PRICING_CONFIG.additionalCosts.spotUV.perSqm} ر.س/م²
-                      </div>
-                    </div>
-                  )}
-                  <ChangeItemsPrices label="سبوت UV" price={PRICING_CONFIG.additionalCosts.spotUV.perSqm} />
-                  <button
-                    onClick={() => setHasSpotUV(!hasSpotUV)}
-                    className={`relative w-12 h-6 rounded-full transition-all ${hasSpotUV ? 'bg-neutral-900' : 'bg-neutral-300'
-                      }`}
-                  >
-                    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${hasSpotUV ? 'right-1' : 'left-1'
-                      }`} />
-                  </button>
-                </div>
+              <div>
+                <label className="block text-xs font-semibold text-neutral-600 mb-2">تكلفة القالب (ثابتة)</label>
+                <input
+                  type="number"
+                  placeholder="مثال: 400"
+                  value={varneshCover}
+                  onChange={(e) => setVarneshCover(e.target.value)}
+                  className="w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 text-neutral-900 text-sm font-medium focus:border-neutral-900 focus:outline-none transition-all"
+                />
               </div>
             </div>
           </div>
-        </div>
+        )}
+      </div>
 
+      {/* الفرنيش */}
+      <div className="bg-neutral-50 border border-neutral-200 rounded-lg px-4 py-3 hover:bg-neutral-100 transition-all">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-sm font-semibold text-neutral-900">الفرنيش (varnish)</div>
+            <div className="text-xs text-neutral-500 mt-0.5">UV - لمعان انتقائي</div>
+          </div>
+          <div className="flex items-center gap-2">
+            {hasSpotUV && (
+              <div className="px-2.5 py-1 bg-neutral-900 text-white rounded-md text-[11px] font-semibold">
+                +{PRICING_CONFIG.additionalCosts.spotUV.perSqm} ر.س/م²
+              </div>
+            )}
+            <ChangeItemsPrices label="سبوت UV" price={PRICING_CONFIG.additionalCosts.spotUV.perSqm} />
+            <button
+              onClick={() => setHasSpotUV(!hasSpotUV)}
+              className={`relative w-12 h-6 rounded-full transition-all shrink-0 ${hasSpotUV ? 'bg-neutral-900' : 'bg-neutral-300'}`}
+            >
+              <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${hasSpotUV ? 'right-1' : 'left-1'}`} />
+            </button>
+          </div>
+        </div>
+        {hasSpotUV && (
+          <div className="mt-3 pt-3 border-t border-neutral-200 animate-fadeIn space-y-3">
+            <div>
+              <label className="block text-xs font-semibold text-neutral-600 mb-2">نوع الفرنيش</label>
+              <select
+                value={varnishType}
+                onChange={(e) => setVarnishType(e.target.value)}
+                className="w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 text-neutral-900 text-sm font-medium focus:border-neutral-900 focus:outline-none transition-all"
+              >
+                {varnishTypes.map((type) => (
+                  <option key={type.value} value={type.value}>
+                    {type.label} {type.price > 0 ? `( +${type.price} ر.س )` : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-neutral-600 mb-2">نسبة التغطية % (للفرنيش الموضعي)</label>
+              <input
+                type="number"
+                placeholder="مثال: 10%"
+                value={varneshCover}
+                onChange={(e) => setVarneshCover(e.target.value)}
+                className="w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 text-neutral-900 text-sm font-medium focus:border-neutral-900 focus:outline-none transition-all"
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+    </div>
+  </div>
+</div>
         {/* التركيب واتجاه الرول */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
@@ -574,9 +606,9 @@ export function StickerDetailsSection(props: StickerDetailsSectionProps) {
   ))}
 </div>
  
-</div>
-      </div>
-      </div>
-    </div>
+  </div>
+  </div>
+  </div>
+  </div>
   );
 }

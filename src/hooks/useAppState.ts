@@ -28,12 +28,15 @@ export const useAppState = () => {
   const [shape, setShape] = useState('rectangle');
   const [cornerType, setCornerType] = useState('normal');
   const [printType, setPrintType] = useState('cmyk-4');
-  const [designCount, setDesignCount] = useState('1');
+  const [designCount, setDesignCount] = useState(1);
   const [hasLamination, setHasLamination] = useState(false);
   const [hasEmbossing, setHasEmbossing] = useState(false);
   const [embossingColor, setEmbossingColor] = useState('');
+  const [laminationType, setLaminationType] = useState('');
   const [hasSilkScreen, setHasSilkScreen] = useState(false);
   const [hasSpotUV, setHasSpotUV] = useState(false);
+  const [varnishType, setVarnishType] = useState('');
+  const [varneshCover, setVarneshCover] = useState('');
   const [assembly, setAssembly] = useState('manual');
   const [rollDirection, setRollDirection] = useState('horizontal');
   const [workFee, setWorkFee] = useState('0');
@@ -82,8 +85,11 @@ export const useAppState = () => {
     hasLamination, setHasLamination,
     hasEmbossing, setHasEmbossing,
     embossingColor, setEmbossingColor,
+    laminationType, setLaminationType,
     hasSilkScreen, setHasSilkScreen,
     hasSpotUV, setHasSpotUV,
+    varnishType, setVarnishType,
+    varneshCover, setVarneshCover,
     assembly, setAssembly,
     rollDirection, setRollDirection,
     workFee, setWorkFee,

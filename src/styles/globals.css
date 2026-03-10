@@ -2,28 +2,7 @@
 
 @theme {
   /* Modern Color Palette for Printing Company */
-  --color-primary: #1E40AF; /* أزرق داكن */
-  --color-primary-light: #3B82F6; /* أزرق فاتح */
-  --color-primary-dark: #1E3A8A;
-  --color-accent: #F97316; /* برتقالي */
-  --color-accent-light: #FB923C;
-  --color-accent-dark: #EA580C;
-  
-  --color-background: #F9FAFB; /* رمادي فاتح جداً */
-  --color-surface: #FFFFFF; /* أبيض */
-  --color-surface-hover: #F3F4F6;
-  
-  --color-text-primary: #111827; /* رمادي داكن */
-  --color-text-secondary: #6B7280; /* رمادي متوسط */
-  --color-text-light: #9CA3AF;
-  
-  --color-border: #E5E7EB;
-  --color-border-focus: #3B82F6;
-  
-  --color-success: #10B981;
-  --color-warning: #F59E0B;
-  --color-error: #EF4444;
-  
+ 
   /* Font Family */
   --font-sans: 'Cairo', sans-serif;
   --font-serif: 'Montserrat', sans-serif;
@@ -34,6 +13,17 @@
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+}
+/* Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 
 body {
