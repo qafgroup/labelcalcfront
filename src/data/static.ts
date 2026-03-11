@@ -72,3 +72,12 @@ export const  materialsData = {
 ]
 
 };  
+// orders page data
+
+export const TABS = [
+  { key:"all",        label:"الكل"    },
+  { key:"pending",    label:"انتظار"  },
+  { key:"processing", label:"تنفيذ"   },
+  { key:"completed",  label:"مكتمل"   },
+  { key:"cancelled",  label:"ملغي"    },
+];

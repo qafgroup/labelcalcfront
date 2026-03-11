@@ -95,7 +95,7 @@ export function OrderSummary({
               <div className="text-lg font-bold text-neutral-900">
                 {stickersPerMeter}
               </div>
-              <span className="text-[10px] text-neutral-500">م²</span>
+              <span className="text-[10px] text-neutral-500">م</span>
             </div>
           </div>
 
