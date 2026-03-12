@@ -1,14 +1,12 @@
+// orderHandler.ts
 import Swal from 'sweetalert2';
 import { validateForm, formatErrorMessage } from '../utils/validation';
+import { downloadOrderPDF } from '../components/QuotePDF';
 
-export interface OrderData {
-  customerInfo: {
-    date: string;
-    customerName: string;
-    customerNumber: string;
-    salesRep: string;
-    salesRepPhone: string;
-  };
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+export interface SingleQuoteData {
+  name: string;
   stickerDetails: {
     dimensions: { length: number; width: number };
     quantity: number;
@@ -19,177 +17,219 @@ export interface OrderData {
     material: string;
     options: {
       lamination: boolean;
+      laminationType?: string;
       embossing: { enabled: boolean; color?: string };
       silkScreen: boolean;
       spotUV: boolean;
+      varnishType?: string;
     };
     assembly: string;
     rollDirection: string;
     rollWidth: number;
     gaping: number;
+    workFee: number;
   };
   pricing: {
     subtotal: number;
     tax: number;
     total: number;
     unitPrice: number;
+    MatCost: number;
   };
   rollInfo: {
     requiredLengthMeters: number;
     stickersPerMeter: number;
     stickersAcrossWidth: number;
+    requiredAreaM2: number;
   };
 }
+
+export interface OrderData {
+  customerInfo: {
+    date: string;
+    customerName: string;
+    customerNumber: string;
+    salesRep: string;
+    salesRepPhone: string;
+  };
+  quotes: SingleQuoteData[];
+  grandTotal: number;
+  grandSubtotal: number;
+  grandTax: number;
+}
+
+// ─── واتساب — رسالة ترحيبية + تحميل PDF تلقائي ──────────────────────────────
+
+export const sendViaWhatsApp = async (order: OrderData): Promise<void> => {
+  const rawPhone = order.customerInfo.customerNumber.replace(/\D/g, '');
+  const phone    = rawPhone.startsWith('0') ? `966${rawPhone.slice(1)}` : rawPhone;
+
+  // ١. تحميل الـ PDF أولاً
+  await downloadOrderPDF(order);
+
+  // ٢. رسالة ترحيبية بسيطة — بدون تفاصيل التسعيرة
+  const itemsCount = order.quotes.length;
+  const greeting = [
+    `السلام عليكم ورحمة الله وبركاته 🌿`,
+    ``,
+    `نشكركم على تواصلكم مع شركتنا،`,
+    `يسعدنا تقديم عرض الأسعار الخاص بكم.`,
+    ``,
+    `📎 *مرفق عرض السعر*`,
+    `━━━━━━━━━━━━━━━━━━`,
+    `👤 العميل: ${order.customerInfo.customerName}`,
+    `🗓️ التاريخ: ${order.customerInfo.date}`,
+    `🏷️ عدد الأصناف: ${itemsCount} ${itemsCount === 1 ? 'صنف' : 'أصناف'}`,
+    `💵 الإجمالي: *${order.grandTotal.toFixed(2)} ر.س* (شامل الضريبة)`,
+    `━━━━━━━━━━━━━━━━━━`,
+    ``,
+    `نرجو مراجعة الملف المرفق للاطلاع على كافة التفاصيل.`,
+    `نحن بانتظار تأكيدكم 🤝`,
+    ``,
+    `مع التحية،`,
+    `${order.customerInfo.salesRep}`,
+  ].join('\n');
+
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(greeting)}`, '_blank');
+};
+
+// ─── الدالة الرئيسية ──────────────────────────────────────────────────────────
 
 export const handleOrderSubmit = (
   customerName: string,
   customerNumber: string,
   salesRep: string,
   salesRepPhone: string,
-  length: string,
-  width: string,
-  quantity: string,
-  shape: string,
-  cornerType: string,
-  printType: string,
-  designCount: string,
-  material: string,
-  hasLamination: boolean,
-  hasEmbossing: boolean,
-  embossingColor: string,
-  hasSilkScreen: boolean,
-  hasSpotUV: boolean,
-  assembly: string,
-  rollDirection: string,
-  rollWidth: string,
-  gaping: string,
   date: string,
-  subtotal: number,
-  tax: number,
-  total: number,
-  unitPrice: number,
-  requiredLengthMeters: number,
-  stickersPerMeter: number,
-  _requiredAreaM2: number,
-  stickersAcrossWidth: number,
+  quotes: SingleQuoteData[],
   onSuccess?: (orderData: OrderData) => void
 ): boolean => {
+  const first = quotes[0];
   const errors = validateForm(
     customerName, customerNumber, salesRep, salesRepPhone,
-    length, width, quantity
+    String(first?.stickerDetails.dimensions.length ?? ''),
+    String(first?.stickerDetails.dimensions.width ?? ''),
+    String(first?.stickerDetails.quantity ?? '')
   );
 
   if (errors.length > 0) {
     Swal.fire({
       icon: 'error',
       title: 'خطأ في إدخال البيانات',
-      text: formatErrorMessage(errors),
+      html: `<div style="direction:rtl;text-align:right;">${formatErrorMessage(errors)}</div>`,
       customClass: { popup: 'rounded-3xl' },
+      confirmButtonColor: '#111827',
     });
     return false;
   }
 
+  const grandTotal    = quotes.reduce((s, q) => s + q.pricing.total,    0);
+  const grandSubtotal = quotes.reduce((s, q) => s + q.pricing.subtotal, 0);
+  const grandTax      = quotes.reduce((s, q) => s + q.pricing.tax,      0);
+
   const orderData: OrderData = {
-    customerInfo: {
-      date, customerName, customerNumber, salesRep, salesRepPhone,
-    },
-    stickerDetails: {
-      dimensions: { length: parseFloat(length), width: parseFloat(width) },
-      quantity: parseInt(quantity),
-      shape,
-      cornerType: shape === 'square' ? cornerType : null,
-      printType,
-      designCount: parseInt(designCount),
-      material,
-      options: {
-        lamination: hasLamination,
-        embossing: hasEmbossing ? { enabled: true, color: embossingColor } : { enabled: false },
-        silkScreen: hasSilkScreen,
-        spotUV: hasSpotUV,
-      },
-      assembly,
-      rollDirection,
-      rollWidth: parseFloat(rollWidth),
-      gaping: parseFloat(gaping),
-    },
-    pricing: { subtotal, tax, total, unitPrice },
-    rollInfo: { requiredLengthMeters, stickersPerMeter, stickersAcrossWidth },
+    customerInfo: { date, customerName, customerNumber, salesRep, salesRepPhone },
+    quotes,
+    grandTotal,
+    grandSubtotal,
+    grandTax,
   };
 
-  showSuccessMessage(orderData);
+  showSuccessDialog(orderData);
   if (onSuccess) onSuccess(orderData);
   return true;
 };
 
-export const showSuccessMessage = (orderData: OrderData): void => {
-  const embossingText = orderData.stickerDetails.options.embossing.enabled ? 'نعم' : 'لا';
+// ─── نافذة النجاح ─────────────────────────────────────────────────────────────
 
-  const htmlContent = `
-    <div class="success-message-container" style="text-align: right; direction: rtl; font-family: 'Tajawal', Arial, sans-serif;">
-      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 16px; margin-bottom: 16px; color: white;">
-        <h3 style="margin: 0 0 16px 0; font-size: 18px; font-weight: bold;">بيانات العميل</h3>
-        <div style="display: grid; gap: 10px; font-size: 14px;">
-          <div style="display: flex; justify-content: space-between; background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px;">
-            <span style="font-weight: 600;">${orderData.customerInfo.customerName}</span>
-            <span style="opacity: 0.9;">العميل</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px;">
-            <span style="font-weight: 600;">${orderData.customerInfo.customerNumber}</span>
-            <span style="opacity: 0.9;">رقم العميل</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px;">
-            <span style="font-weight: 600;">${orderData.customerInfo.date}</span>
-            <span style="opacity: 0.9;">التاريخ</span>
-          </div>
+export const showSuccessDialog = (order: OrderData): void => {
+  const quotesHtml = order.quotes.map((q) => `
+    <div style="display:flex;justify-content:space-between;align-items:center;
+      background:rgba(255,255,255,0.13);padding:9px 13px;border-radius:9px;margin-bottom:7px;">
+      <span style="font-size:14px;font-weight:800;">${q.pricing.total.toFixed(2)} ر.س</span>
+      <div style="text-align:right">
+        <div style="font-weight:700;font-size:12px;">${q.name}</div>
+        <div style="font-size:10px;opacity:.75;">
+          ${q.stickerDetails.dimensions.length}×${q.stickerDetails.dimensions.width} مم —
+          ${q.stickerDetails.quantity.toLocaleString('ar-SA')} قطعة
         </div>
       </div>
-      <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 20px; border-radius: 16px; margin-bottom: 16px; color: white;">
-        <h3 style="margin: 0 0 16px 0; font-size: 18px; font-weight: bold;">تفاصيل الملصق</h3>
-        <div style="display: grid; gap: 10px; font-size: 14px;">
-          <div style="display: flex; justify-content: space-between; background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px;">
-            <span style="font-weight: 600;">${orderData.stickerDetails.dimensions.length} × ${orderData.stickerDetails.dimensions.width} سم</span>
-            <span style="opacity: 0.9;">المقاسات</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px;">
-            <span style="font-weight: 600;">${orderData.stickerDetails.quantity.toLocaleString()} قطعة</span>
-            <span style="opacity: 0.9;">الكمية</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px;">
-            <span style="font-weight: 600;">${orderData.rollInfo.requiredLengthMeters.toFixed(1)} متر</span>
-            <span style="opacity: 0.9;">طول الرول المطلوب</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px;">
-            <span style="font-weight: 600;">${orderData.stickerDetails.rollWidth} سم</span>
-            <span style="opacity: 0.9;">عرض الرول</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px;">
-            <span style="font-weight: 600;">${embossingText}</span>
-            <span style="opacity: 0.9;">بصمة</span>
-          </div>
-        </div>
-      </div>
-      <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); padding: 20px; border-radius: 16px; color: white;">
-        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.2); padding: 12px; border-radius: 8px; border: 2px solid rgba(255,255,255,0.3);">
-          <span style="font-weight: 700; font-size: 18px;">${orderData.pricing.total.toFixed(2)} ريال</span>
-          <span style="font-weight: 600; font-size: 16px;">الإجمالي النهائي</span>
-        </div>
-      </div>
-    </div>`;
+    </div>`).join('');
+
+  const grandHtml = order.quotes.length > 1 ? `
+    <div style="display:flex;justify-content:space-between;align-items:center;
+      background:rgba(255,255,255,0.22);padding:11px 13px;border-radius:9px;
+      border:2px solid rgba(255,255,255,0.35);margin-top:10px;">
+      <span style="font-size:17px;font-weight:900;">${order.grandTotal.toFixed(2)} ر.س</span>
+      <span style="font-size:13px;font-weight:700;">الإجمالي الكلي</span>
+    </div>` : '';
 
   Swal.fire({
     icon: 'success',
-    title: '<span style="color: #10b981; font-family: \'Tajawal\', Arial;">تم إنشاء العرض بنجاح</span>',
-    html: htmlContent,
-    width: '600px',
-    padding: '2rem',
+    title: `<span style="font-family:'Tajawal',Arial;color:#10b981;font-size:17px;">
+              ✓ تم إنشاء العرض بنجاح
+            </span>`,
+    html: `
+      <div style="direction:rtl;text-align:right;font-family:'Tajawal',Arial,sans-serif;">
+        <!-- العميل -->
+        <div style="background:linear-gradient(135deg,#667eea,#764ba2);
+          padding:15px;border-radius:12px;margin-bottom:12px;color:white;">
+          <div style="font-weight:700;font-size:13px;margin-bottom:10px;">بيانات العميل</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;font-size:12px;">
+            ${[
+              ['العميل',       order.customerInfo.customerName],
+              ['الرقم',        order.customerInfo.customerNumber],
+              ['المندوب',      order.customerInfo.salesRep],
+              ['التاريخ',      order.customerInfo.date],
+            ].map(([label, value]) => `
+              <div style="background:rgba(255,255,255,0.13);padding:7px 10px;border-radius:7px;">
+                <div style="opacity:.7;font-size:10px;">${label}</div>
+                <div style="font-weight:700;">${value}</div>
+              </div>`).join('')}
+          </div>
+        </div>
+        <!-- التسعيرات -->
+        <div style="background:linear-gradient(135deg,#f093fb,#f5576c);
+          padding:15px;border-radius:12px;color:white;">
+          <div style="font-weight:700;font-size:13px;margin-bottom:10px;">
+            التسعيرات (${order.quotes.length} ملصق)
+          </div>
+          ${quotesHtml}
+          ${grandHtml}
+        </div>
+      </div>`,
+    width: '560px',
     background: '#f8fafc',
-    customClass: {
-      popup: 'rounded-3xl shadow-2xl',
-      confirmButton: 'bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 px-8 rounded-xl transition-all',
-    },
-    confirmButtonText: 'حسناً',
-    cancelButtonText: 'إغلاق',
+    showConfirmButton: true,
     showCancelButton: true,
-    focusConfirm: false,
+    showDenyButton: true,
+    confirmButtonText: '📄 تحميل PDF',
+    cancelButtonText: '💬 إرسال واتساب + PDF',
+    denyButtonText: 'إغلاق',
+    reverseButtons: false,
+    customClass: {
+      popup:         'rounded-3xl shadow-2xl',
+      confirmButton: 'swal-pdf-btn',
+      cancelButton:  'swal-wa-btn',
+      denyButton:    'swal-close-btn',
+    },
+    didOpen: () => {
+      const el = document.createElement('style');
+      el.textContent = `
+        .swal-pdf-btn   { background:#1e293b!important; color:#fff!important; font-weight:700!important; border-radius:9px!important; padding:9px 22px!important; font-family:'Tajawal',Arial; }
+        .swal-wa-btn    { background:#25d366!important; color:#fff!important; font-weight:700!important; border-radius:9px!important; padding:9px 22px!important; font-family:'Tajawal',Arial; }
+        .swal-close-btn { background:#e2e8f0!important; color:#64748b!important; font-weight:700!important; border-radius:9px!important; padding:9px 22px!important; font-family:'Tajawal',Arial; }
+      `;
+      document.head.appendChild(el);
+    },
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      // ── تحميل PDF فقط ──
+      await downloadOrderPDF(order);
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      // ── تحميل PDF + فتح واتساب برسالة ترحيبية ──
+      await sendViaWhatsApp(order);
+    }
+    // deny = إغلاق — لا شيء
   });
 };

@@ -67,7 +67,7 @@ const [page, setPage] = useState<ActivePage>('pricing-calc');
   }
   
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 to-blue-50">
+    <div className="min-h-screen" style={{ background: "#fffdfbff" }}>
       <ArabicHeader userEmail={state.userEmail} onLogout={handleLogout}
         activePage={page}
         onNavigate={setPage}
